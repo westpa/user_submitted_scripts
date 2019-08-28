@@ -1,2 +1,4 @@
-# user_submitted_scripts
-Example scripts for WESTPA submitted by users
+# User Submitted Westpa Scripts
+This collection of files is meant to provide all WESTPA users examples on how to perform certain tasks or replicate published results.  
+Files are organized into directories based off of ...
+
