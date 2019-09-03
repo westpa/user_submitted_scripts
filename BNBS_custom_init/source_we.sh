@@ -1,0 +1,5 @@
+WEST_ROOT="$HOME/westpa/"
+#WEST_ROOT="/oasis/scratch/alisingl/temp_project/nacl_we/apps/westpa.devel/"
+MDA_PATH="$HOME/westpa/MDA/lib/python2.7/site-packages/"
+export PYTHONPATH="$MDA_PATH:$WEST_ROOT/lib/h5py:$WEST_ROOT/lib/wwmgr:$WEST_ROOT/src:$WEST_ROOT/lib/west_tools:$PYTHONPATH"
+#export epython="/oasis/scratch/alisingl/temp_project/nacl_we/apps/epd/bin/python"
