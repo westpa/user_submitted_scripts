@@ -1,0 +1,18 @@
+# General scheme 
+The general idea is to take the last iterations of equilibrium simulations and use the results to initialize a new 
+WESTPA simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
+
+  python build_state_dist_bb.py --reference min.gro --bn unbound.gro --bs barstar.gro --bn_path $PWD/000146/ --bs_path $PWD/000163/ bn_west.h5 bs_west.h5
+
+where min is the full system, bn and bs are coordinate files for both proteins, bn_path and bs_path are the last iterations of both equilibrium simulations
+for bn and bs and finally you pass in the west.h5 files for both proteins. 
+
+This will generate a new h5 file called "basis.h5" that contains the basis state information to initialize the actual
+WESTPA run. You then run a customized version of the simulation initialization with "w_custom_init.py" which gives you 
+a standard looking WESTPA simulation. 
+
+  w_custom_init.py -b basis.h5 -t ref.pdb
+
+where -b is the basis file generated usgin build_state_dist.py and -t is a reference coordinate file for the final 
+system. This generates a west.h5 file exactly like w_init would which allows you to then run the simulation as if 
+it's a normal WETSPA simulation. 
