@@ -15,4 +15,4 @@ a standard looking WESTPA simulation.
 
 where -b is the basis file generated usgin build_state_dist.py and -t is a reference coordinate file for the final 
 system. This generates a west.h5 file exactly like w_init would which allows you to then run the simulation as if 
-it's a normal WETSPA simulation. 
+it's a normal WESTPA simulation. 
