@@ -1,4 +1,26 @@
-# General scheme 
+In this directory, you will find files needed for custom initialization of starting from two separate equilibration WESTPA runs of individual proteins to 
+generate a new WESTPA run for protein binding. 
+
+The general idea is to run two separate WE runs of individual proteins and then take the last iterations which are then passed to a script named 
+"build_state_dist_bb.py" in this repo to generate pairs of structures with weights associated with each and then run the WE split/merge algorithm. 
+The script will need the h5 files of the original runs (for the weights), the path to the final iteration of both runs 
+(for the actual coordinate files), distance to separate them and reference coordinate files for both proteins. This script will output a h5 file 
+(basis.h5 by default), that contains the weights and structures of combinations of states. Please note, this is not a generalized script and will 
+require modifications for your system (progress coordinates, file names, specification of binding partners etc.). 
+
+Next step is to generate a starting h5 file for the full WESTPA run which is done by "w_custom_init.py". This step will run the split/merge scheme 
+on the combination of these states generated from the previous step and will output an initial "west.h5" file like regular WESTPA initialization 
+(it will also need a PDB file of the full structure with both proteins). There are some short notes in README as to how to run and I left some of 
+the scripts I used to generate the original files in the repo (especially ones that I used to run the first step on a cluster, if the README is not 
+there when you take a look, give it a bit of time, it will be).
+
+If you are using explicit water, you will have to equilibrate those separately before passing it back to this pipeline since this setup will randomly 
+re-orient the partners which requires the waters to be stripped first and then re-equilibrated. I suggest running your preferred equilibration scheme 
+(with some form of constraints on the coordinates to keep the distance between the partners about the same) on the set of generated starting structures 
+and just replace the existing files with the equilibrated ones (keeping names the same). 
+
+#General scheme
+
 The general idea is to take the last iterations of equilibrium simulations and use the results to initialize a new 
 WESTPA simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
 
@@ -16,3 +38,5 @@ a standard looking WESTPA simulation.
 where -b is the basis file generated usgin build_state_dist.py and -t is a reference coordinate file for the final 
 system. This generates a west.h5 file exactly like w_init would which allows you to then run the simulation as if 
 it's a normal WESTPA simulation. 
+
+
