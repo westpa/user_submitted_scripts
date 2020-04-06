@@ -21,7 +21,8 @@ re-orient the partners which requires the waters to be stripped first and then r
 (with some form of constraints on the coordinates to keep the distance between the partners about the same) on the set of generated starting structures 
 and just replace the existing files with the equilibrated ones (keeping names the same). 
 
-#General scheme
+To use the scripts
+------------------
 
 The general idea is to take the final iterations of the equilibrium WE simulations and use the results to initialize a new 
 WE simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
