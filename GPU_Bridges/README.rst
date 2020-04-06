@@ -1,7 +1,5 @@
 Shell scripts for running WESTPA on GPUs
 ----------------------------------------
 
-Move this env.sh, runwe_bridges.sh and node.sh into your main simulation directory.
-This run script will start the zmq work manager, which will manually ssh into each
-node requested and execute the node.sh script, which will execute w_run.  This collection
-of scripts will work on a single GPU node or on multiple GPU nodes.
+This collection of scripts will work on a single GPU node or across multiple GPU nodes. To use these scripts, move them into your main simulation directory.The run script will start the zmq work manager, which will manually ssh into each
+node requested and execute the node.sh script, which will execute w_run.  
