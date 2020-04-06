@@ -9,6 +9,7 @@ Using the script
 ----------------
 
 To run the script, please specify the following in "eventdurationdist.py": 
+
 * HDF5 file (direct.h5) from your WESTPA simulation
 * total number of weighted ensemble iterations
 * target state
