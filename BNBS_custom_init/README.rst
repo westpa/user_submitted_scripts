@@ -21,7 +21,7 @@ where --reference is the coordinate file for the energy minimized system consist
 
 The conformations in --bn_path and --bs_path are passed into the west.h5 files for the corresponding proteins, bn_west.h5 and bs_west.h5. 
 
-The output will be a new h5 file called "basis.h5" that contains the basis state information to initialize the WE binding simulation. 
+The output will be an HDF5 file called "basis.h5" that contains the basis state information to initialize the WE binding simulation. 
 
 Next, we run a customized, initialization of the binding simulation using the following: 
 
