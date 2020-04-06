@@ -1,12 +1,10 @@
---------
 Overview
 --------
 
-This Python script (eventdurationdist.py) and was written by Alex J. DeGrave (ajd98) to plot the probability distribution 
-of the event duration time from a WESTPA simulation. The event duration time is the time required for transitions 
+This Python script (eventdurationdist.py) and was written by Alex J. DeGrave (ajd98) to generate a plot of the probability 
+distribution of the event duration time from a WESTPA simulation. The event duration time is the time required for transitions 
 between stable states and does not include the "waiting time" involving fluctuations in the initial stable state. 
 
-----------------
 Using the script
 ----------------
 
