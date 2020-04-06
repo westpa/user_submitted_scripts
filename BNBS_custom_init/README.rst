@@ -1,45 +1,29 @@
 Overview
 --------
-In this directory, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE)
-simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sciences (2019).
+In this directory, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE) simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sci. (2019). Each initial unbound state consists of the two proteins separated at a distance of 20 Angstrom and randomly oriented with respect to each other. Conformations of each unbound protein were selected from a preparatory, equilibrium WE simulation of that protein. These preparatory simulations were completed prior to use the scripts in this directory.
 
-The general idea is to first run two preparatory WE simulations of individual proteins and then pass the unbound conformations from the 
-final WE iterations to the script called "build_state_dist_bb.py" to generate pairs of structures with appropriately combined statistical weights. 
-The script requires the HDF5 (h5) files of the original runs (for the weights), the path to the final WE iteration of both runs 
-(for the actual coordinate files), distance to separate them and reference coordinate files for both proteins. This script will output a h5 file 
-(basis.h5 by default), that contains the weights and structures of combinations of states. Please note, this is not a generalized script and will 
-require modifications for your system (progress coordinates, file names, specification of binding partners etc.). 
+The generation of initial unbound states involved the following two steps:
+1) Select conformations of each unbound protein from the final iteration of the corresponding preparatory simulation according to their statistical weights, randomly orient the two proteins at a separation of 20 Angstroms, and multiply together the statistical weights.  
+2) Assign the resulting pairs of unbound proteins to appropriate bins along the selected progress coordinate for the binding simulations and prune the lowest-weight trajectories according to the standard WE resampling (split/merge) scheme.
 
-Next step is to generate a starting h5 file for the full WESTPA run which is done by "w_custom_init.py". This step will run the split/merge scheme 
-on the combination of these states generated from the previous step and will output an initial "west.h5" file like regular WESTPA initialization 
-(it will also need a PDB file of the full structure with both proteins). There are some short notes in README as to how to run and I left some of 
-the scripts I used to generate the original files in the repo (especially ones that I used to run the first step on a cluster, if the README is not 
-there when you take a look, give it a bit of time, it will be).
-
-If you are using explicit water, you will have to equilibrate those separately before passing it back to this pipeline since this setup will randomly 
-re-orient the partners which requires the waters to be stripped first and then re-equilibrated. I suggest running your preferred equilibration scheme 
-(with some form of constraints on the coordinates to keep the distance between the partners about the same) on the set of generated starting structures 
-and just replace the existing files with the equilibrated ones (keeping names the same). 
+To run the binding simulations in explicit-solvent, the remaining pairs of unbound proteins were immersed in boxes of explicit water after which the solvent was equilibrated while applying harmonic restraints to the positions of the proteins. 
 
 To use the scripts
 ------------------
 
-The general idea is to take the final iterations of the equilibrium WE simulations and use the results to initialize a new 
-WE simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
+To apply the above two steps, we run the following: 
 
   python build_state_dist_bb.py --reference min.gro --bn unbound.gro --bs barstar.gro --bn_path $PWD/000146/ --bs_path $PWD/000163/ bn_west.h5 bs_west.h5
 
-where min is the full system, bn and bs are coordinate files for both proteins, bn_path and bs_path are the last iterations of both equilibrium simulations
-for bn and bs and finally you pass in the west.h5 files for both proteins. 
+where --reference is a Gromacs coordinate file for the energy minimized system consisting of the initial unbound state, --bn is the coordinate file for barnase, --bs is the coordinate file for barstar, --bn_path is the directory that contains the conformations from the last iteration from the preparatory, equilibrium simulation of barnase, and --bs_path is the directory that contains the conformations from the last iteration from the preparatory, equilibrium simulation of barstar. The conformations in --bn_path and --bs_path are passed into the west.h5 files for the corresponding proteins, bn_west.h5 and bs_west.h5. 
 
-This will generate a new h5 file called "basis.h5" that contains the basis state information to initialize the actual
-WESTPA run. You then run a customized version of the simulation initialization with "w_custom_init.py" which gives you 
-a standard looking WESTPA simulation. 
+The output will be a new h5 file called "basis.h5" that contains the basis state information to initialize the actual
+WE binding simulation. 
+
+Next, we run a customized, initialization of the binding simulation using the following: 
 
   w_custom_init.py -b basis.h5 -t ref.pdb
 
-where -b is the basis file generated usgin build_state_dist.py and -t is a reference coordinate file for the final 
-system. This generates a west.h5 file exactly like w_init would which allows you to then run the simulation as if 
-it's a normal WE simulation. 
-
+where -b is the basis file generated using "build_state_dist.py" and -t is a reference coordinate file for the final 
+system. This generates a west.h5 file that is exactly like the west-h5 file that would be generated by w_init. 
 
