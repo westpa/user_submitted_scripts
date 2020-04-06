@@ -8,8 +8,12 @@ between stable states and does not include the "waiting time" involving fluctuat
 Using the script
 ----------------
 
-To run the script, please specify the following in "eventdurationdist.py": (i) HDF5 file (direct.h5) from 
-your WESTPA simulation, (ii) total number of weighted ensemble iterations, (iii) target state, and (iv) tau-value in ns. 
+To run the script, please specify the following in "eventdurationdist.py": 
+* HDF5 file (direct.h5) from your WESTPA simulation
+* total number of weighted ensemble iterations
+* target state
+* tau-value in ns. 
+
 The output from running the script will be a plot titled "durations.pdf". 
 
 As an example, the direct.h5 file from the Basic WESTPA tutorial in 
