@@ -15,7 +15,8 @@ To apply the above two steps, we run the following:
 
   python build_state_dist_bb.py --reference min.gro --bn unbound.gro --bs barstar.gro --bn_path $PWD/000146/ --bs_path $PWD/000163/ bn_west.h5 bs_west.h5
 
-where --reference is a Gromacs coordinate file for the energy minimized system consisting of the initial unbound state
+where 
+  --reference is a Gromacs coordinate file for the energy minimized system consisting of the initial unbound state
   --bn is the coordinate file for barnase
   --bs is the coordinate file for barstar
   --bn_path is the directory that contains the conformations from the last iteration from the preparatory, equilibrium simulation of barnase
