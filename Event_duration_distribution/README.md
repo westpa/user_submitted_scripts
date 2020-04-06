@@ -1,5 +1,4 @@
-# Python script for plotting the probability distribution of event duration time
-# from a WESTPA simulation
+# Python script for plotting the probability distribution of event duration time from a WESTPA simulation
 # by Alex J. DeGrave
 
 The event duration time is the time required for transitions between stable states and 
