@@ -18,6 +18,6 @@ To run the script, please specify the following in "eventdurationdist.py":
 The output from running the script will be a plot titled "durations.pdf". 
 
 As an example, the direct.h5 file from the Basic WESTPA tutorial in the LiveCoMS Journal publication_ is provided. 
-This tutorial involves the simulation of Na+/Cl- association using 100 weighted ensemble iterations. 
+This tutorial involves the simulation of the Na+/Cl- association process using 100 weighted ensemble iterations. 
 
 .. _publication: https://www.livecomsjournal.org/article/10607-a-suite-of-tutorials-for-the-westpa-rare-events-sampling-software-article-v1-0
