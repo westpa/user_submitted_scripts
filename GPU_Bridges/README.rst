@@ -1,5 +1,5 @@
-Files for running WESTPA on GPUs
---------------------------------
+Shell scripts for running WESTPA on GPUs
+----------------------------------------
 
 Move this env.sh, runwe_bridges.sh and node.sh into your main simulation directory.
 This run script will start the zmq work manager, which will manually ssh into each
