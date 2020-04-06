@@ -3,8 +3,9 @@ Overview
 Here, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE) simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sci. (2019). Each initial unbound state consists of the two proteins separated at a distance of 20 Angstroms and randomly oriented with respect to each other. Conformations of each unbound protein were selected from a preparatory, equilibrium WE simulation of that protein. These preparatory simulations were completed prior to use the scripts in this directory.
 
 The generation of initial unbound states involved the following two steps:
-* Select conformations of each unbound protein from the final iteration of the corresponding preparatory simulation according to their statistical weights, randomly orient the two proteins at a separation of 20 Angstroms, and multiply together the statistical weights.  
-* Assign the resulting pairs of unbound proteins to appropriate bins along the selected progress coordinate for the binding simulations and prune the lowest-weight trajectories according to the standard WE resampling (split/merge) scheme.
+1) Select conformations of each unbound protein from the final iteration of the corresponding preparatory simulation according to their statistical weights, randomly orient the two proteins at a separation of 20 Angstroms, and multiply together the statistical weights. 
+
+2) Assign the resulting pairs of unbound proteins to appropriate bins along the selected progress coordinate for the binding simulations and prune the lowest-weight trajectories according to the standard WE resampling (split/merge) scheme.
 
 To run the binding simulations in explicit-solvent, the remaining pairs of unbound proteins were immersed in boxes of explicit water after which the solvent was equilibrated while applying harmonic restraints to the positions of the proteins. 
 
