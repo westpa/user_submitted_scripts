@@ -1,9 +1,11 @@
-In this directory, you will find files needed for custom initialization of starting from two separate equilibration WESTPA runs of individual proteins to 
-generate a new WESTPA run for protein binding. 
+Overview
+--------
+In this directory, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE)
+simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sciences (2019).
 
-The general idea is to run two separate WE runs of individual proteins and then take the last iterations which are then passed to a script named 
-"build_state_dist_bb.py" in this repo to generate pairs of structures with weights associated with each and then run the WE split/merge algorithm. 
-The script will need the h5 files of the original runs (for the weights), the path to the final iteration of both runs 
+The general idea is to first run two preparatory WE simulations of individual proteins and then pass the unbound conformations from the 
+final WE iterations to the script called "build_state_dist_bb.py" to generate pairs of structures with appropriately combined statistical weights. 
+The script requires the HDF5 (h5) files of the original runs (for the weights), the path to the final WE iteration of both runs 
 (for the actual coordinate files), distance to separate them and reference coordinate files for both proteins. This script will output a h5 file 
 (basis.h5 by default), that contains the weights and structures of combinations of states. Please note, this is not a generalized script and will 
 require modifications for your system (progress coordinates, file names, specification of binding partners etc.). 
@@ -21,8 +23,8 @@ and just replace the existing files with the equilibrated ones (keeping names th
 
 #General scheme
 
-The general idea is to take the last iterations of equilibrium simulations and use the results to initialize a new 
-WESTPA simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
+The general idea is to take the final iterations of the equilibrium WE simulations and use the results to initialize a new 
+WE simulation. To do this, you will have to first use the split/merge scheme using "build_state_dist_bb.py", e.g.
 
   python build_state_dist_bb.py --reference min.gro --bn unbound.gro --bs barstar.gro --bn_path $PWD/000146/ --bs_path $PWD/000163/ bn_west.h5 bs_west.h5
 
@@ -37,6 +39,6 @@ a standard looking WESTPA simulation.
 
 where -b is the basis file generated usgin build_state_dist.py and -t is a reference coordinate file for the final 
 system. This generates a west.h5 file exactly like w_init would which allows you to then run the simulation as if 
-it's a normal WESTPA simulation. 
+it's a normal WE simulation. 
 
 
