@@ -1,6 +1,6 @@
 Overview
 --------
-Here, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE) simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sci. (2019). Each initial unbound state consists of the two proteins separated at a distance of 20 Angstroms and randomly oriented with respect to each other. Conformations of each unbound protein were selected from a preparatory, equilibrium WE simulation of that protein. These preparatory simulations were completed prior to use the scripts in this directory.
+Here, you will find the scripts and files that were used to generate the initial unbound states for the weighted ensemble (WE) simulation of the protein-protein binding process involving the barnase and barstar proteins in Saglam & Chong, Chemical Sci. (2019). Each initial unbound state consists of the two proteins separated at a distance of 20 Angstroms and randomly oriented with respect to each other. Conformations of each unbound protein were selected from a preparatory, equilibrium WE simulation of that protein. These preparatory simulations were completed prior to use the scripts in this directory.The Gromacs software package was used for dynamics propagation.
 
 The generation of initial unbound states involved the following two steps:
 
@@ -17,7 +17,7 @@ To apply the above two steps, we run the following:
 
   python build_state_dist_bb.py --reference min.gro --bn unbound.gro --bs barstar.gro --bn_path $PWD/000146/ --bs_path $PWD/000163/ bn_west.h5 bs_west.h5
 
-where --reference is a Gromacs coordinate file for the energy minimized system consisting of the initial unbound state, --bn is the coordinate file for barnase, --bs is the coordinate file for barstar, --bn_path is the directory of conformations from the last iteration from the preparatory, equilibrium simulation of barnase, --bs_path is the directory of conformations from the last iteration from the preparatory, equilibrium simulation of barstar. 
+where --reference is the coordinate file for the energy minimized system consisting of the initial unbound state, --bn is the coordinate file for barnase, --bs is the coordinate file for barstar, --bn_path is the directory of conformations from the last iteration from the preparatory, equilibrium simulation of barnase, --bs_path is the directory of conformations from the last iteration from the preparatory, equilibrium simulation of barstar. 
 
 The conformations in --bn_path and --bs_path are passed into the west.h5 files for the corresponding proteins, bn_west.h5 and bs_west.h5. 
 
