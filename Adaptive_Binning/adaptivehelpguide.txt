@@ -1,0 +1,22 @@
+Recommendations for Using Adaptive Binning
+
+Bin Target Count: A high bin target count should allow for greater ability to overcome large energy barriers on for an initial the trajectory (a leading walker). Of course, if this raised more compuational resources will be used (increasing linearly).
+
+Number of Dimensions: If possible, one may want to try more dimensions if possible since the adaptive scheme excels relative to the manual binning in higher dimension bin usage.
+
+Bins per Dimension: Raising bins per dimension is assumed to be most effective in obtaining accurate rate constants since it increases probaility of repeat succesful (non leading walkers). Raising this of course increases computation time and this increases is of the order of the number of dimensions.
+
+PCA: If the dimensions being used are correlated, turning this on will attempt to make more efficent usage of designated bins by performing change to the principal components of the current distribution of walkers.
+
+Maxcap: The max cap in the given dimension ensures that there will be no more than one bin worth of walkers having greater than the maxcap progress coordinate.
+
+Mincap: Same as max cap but with minimum and less than.
+
+Target State: Determines the boundary for passing into the target state in specified dimension.
+
+Target State Direction: Used to determine the direction in from which the initial state goes toward the target state.
+
+Active Target: Determines if there is a target state.
+
+Split Isolated: This feature is intended to increase the number of distinct trajectories moving from initial to target state without using a signifigant amount of resours (adding only one new bin per dimension). It should theoretically be on but, it is newer than the original scheme and its effects have only been seen on two systems.
+
