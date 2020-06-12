@@ -8,7 +8,6 @@ west:
   drivers:
     sim_manager: manager.WESimManager
     module_path: $WEST_SIM_ROOT
-
-3.	  In your westpa_scripts folder. change the name of runseg.sh to runseg2.sh 
+3.   Make sure cfg specifices desired runseg.sh
 4.	 Make desired changes to adaptive.py (instructions within file)
 
