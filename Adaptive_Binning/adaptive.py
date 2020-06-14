@@ -15,7 +15,7 @@ pcoord_dtype = numpy.float32
 #THESE ARE THE FOUR THINGS YOU SHOULD CHANGE
 bintargetcount=4 #number of walkers per bin
 numberofdim=2  # number of dimensions
-binsperdim=6   # excludes the minimum and maximum case. You will have binsperbin^numberofdim+numberofdim*3 bins total
+binsperdim=6   # excludes the minimum and maximum case. You will have binsperdim^numberofdim+numberofdim*2+1*SplitIsolated bins total
 pcoordlength=101 # lenth of the pcoord
 PCA=False       # choose to do principal component analysis
 maxcap=[inf,inf]	#these are in the order of the dimensions left is first dimension and right is second dimension
@@ -70,7 +70,7 @@ def function_map(coords, mask, output):
 		for n in range(numberofdim):
 			if (activetarget==1) and targetstate[n] is not None:
 				if (originalcoords[i,n]*targetstatedirection) >= (targetstate[n]*targetstatedirection):
-					holder=binsperdim**numberofdim+numberofdim*3
+					holder=binsperdim**numberofdim+numberofdim*(2+splitIsolated)
 			if (holder==binsperdim**numberofdim+numberofdim*2):
 				n=numberofdim
 			elif coords[i,n]>=maxlist[n] or originalcoords[i,n]>=maxcap[n]:
