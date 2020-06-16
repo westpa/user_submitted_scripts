@@ -70,7 +70,7 @@ def function_map(coords, mask, output):
 		for n in range(numberofdim):
 			if (activetarget==1) and targetstate[n] is not None:
 				if (originalcoords[i,n]*targetstatedirection) >= (targetstate[n]*targetstatedirection):
-					holder=binsperdim**numberofdim+numberofdim*(2+splitIsolated)
+					holder=binsperdim**numberofdim+numberofdim*2
 			if (holder==binsperdim**numberofdim+numberofdim*2):
 				n=numberofdim
 			elif coords[i,n]>=maxlist[n] or originalcoords[i,n]>=maxcap[n]:
@@ -80,7 +80,7 @@ def function_map(coords, mask, output):
 				holder =2*n+1
 				n=numberofdim
 			elif coords[i,n]==difflist[n] and splitIsolated==1:
-				holder=binsperdim**numberofdim+numberofdim*2+n
+				holder=binsperdim**numberofdim+numberofdim*2+n+1
 				n=numberofdim
 		if holder==2*numberofdim:
 			for j in range(numberofdim):
