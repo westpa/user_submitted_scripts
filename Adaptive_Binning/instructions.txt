@@ -8,6 +8,7 @@ west:
   drivers:
     sim_manager: manager.WESimManager
     module_path: $WEST_SIM_ROOT
+    WE_driver: driver.WEDriver
 3.   Make sure cfg specifices desired runseg.sh
 4.	 Make desired changes to adaptive.py (instructions within file)
 
