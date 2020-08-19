@@ -100,11 +100,11 @@ def function_map(coords, mask, output):
 				n=numberofdim
 			elif coords[i,n]==difflist[n] and splitIsolated==1:
 				print(coords[i,n])
-				holder=binsperdim**numberofdim+numberofdim*2+2*n+1
+				holder=binsperdim**numberofdim+numberofdim*2+2*n+activetarget
 				n=numberofdim
 			elif coords[i,n]==flipdifflist[n] and splitIsolated==1:
 				print(coords[i,n])
-				holder=binsperdim**numberofdim+numberofdim*2+2*n+2
+				holder=binsperdim**numberofdim+numberofdim*2+2*n+activetarget+1
 				n=numberofdim
 		if holder==2*numberofdim:
 			for j in range(numberofdim):
