@@ -15,7 +15,7 @@ pcoord_dtype = numpy.float32
 #THESE ARE THE FOUR THINGS YOU SHOULD CHANGE
 bintargetcount=4 #number of walkers per bin
 numberofdim=2  # number of dimensions
-binsperdim=6   # excludes the minimum and maximum case. You will have binsperbin^numberofdim+numberofdim*3 bins total
+binsperdim=6   # excludes the minimum and maximum case. You will have binsperdim**numberofdim+numberofdim*(2+2*splitIsolated) bins total
 pcoordlength=101 # lenth of the pcoord
 PCA=False       # choose to do principal component analysis
 maxcap=[inf,inf]	#these are in the order of the dimensions left is first dimension and right is second dimension
