@@ -62,6 +62,9 @@ def function_map(coords, mask, output):
 		except:
                         temp=column_stack((orderedcoords[:,n],originalcoords[:,numberofdim-1]))
 		temp=temp[temp[:,0].argsort()]
+		for p in range(len(temp)):
+                	if temp[p][1]==0:
+                		temp[p][1]=10**-39
 		fliptemp=flipud(temp)
 		difflist.append(0)
 		flipdifflist.append(0)	
