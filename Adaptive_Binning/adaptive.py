@@ -116,8 +116,6 @@ def function_map(coords, mask, output):
 			for j in range(numberofdim):
 				holder = holder + (digitize(coords[i][j],linspace(minlist[j],maxlist[j],binsperdim+1))-1)*(binsperdim)**j
 		output[i]=holder
-	print(coords)
-	print(output)
 	return output
 
 class System(WESTSystem):
