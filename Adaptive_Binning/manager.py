@@ -495,7 +495,7 @@ class WESimManager:
                 log.error('unknown future {!r} received from work manager'.format(future))
                 raise AssertionError('untracked future {!r}'.format(future))                    
         #WARNING
-        self.we_driver.assign(self.segments.values())
+        self.we_driver.assign(self.segments.values(), endprop=True)
         self.get_istate_futures()            
         log.debug('done with propagation')
         self.save_bin_data()
