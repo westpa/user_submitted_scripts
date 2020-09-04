@@ -15,6 +15,6 @@ west:
   drivers:
     sim_manager: manager.WESimManager
     module_path: $WEST_SIM_ROOT
-    WE_driver: driver.WEDriver
+    we_driver: driver.WEDriver
 3.	 Make desired changes to adaptive.py (instructions within file)
 
