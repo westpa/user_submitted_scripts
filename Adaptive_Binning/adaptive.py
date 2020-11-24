@@ -48,6 +48,8 @@ splitIsolated=1     #choose 0 to disable the use of bottleneck walkers (not reco
 
 def function_map(coords, mask, output):
 
+	splittingrelevant=True #This is to make sure splitting is relevant (not relevant for binner after recycling for example)
+	
 	originalcoords=copy(coords) #It is a good idea to keep an original array
 
 	maxlist=[] #Preparing array to contain maximum pcoords in each dimension
