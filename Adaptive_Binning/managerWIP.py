@@ -133,7 +133,7 @@ class WESimManager:
         target_counts = self.we_driver.bin_target_counts
 
         # Do not include bins with target count zero (e.g. sinks, never-filled bins) in the (non)empty bins statistics
-        n_active_bins = len(segments)/target_counts
+        n_active_bins = len(segments)/target_counts[0]
         seg_probs = numpy.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
         bin_probs = numpy.fromiter(map(operator.attrgetter('weight'), bins), dtype=weight_dtype, count=len(bins)) 
         norm = seg_probs.sum()
