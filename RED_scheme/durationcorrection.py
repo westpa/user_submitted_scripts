@@ -94,15 +94,16 @@ class DurationCorrection(object):
             1 ps and tau=20 ps should have timepoints=21.
         '''
         dtau = 1./(timepoints-1)
-        f_tilde = numpy.zeros(maxduration*(timepoints-1))
 
         #      ~
         # find f(tau)
         taugrid = numpy.arange(0, maxduration, dtau, dtype=float)
+        f_tilde = numpy.zeros(len(taugrid), dtype=float)
         for i, tau in enumerate(taugrid):
-            matches = numpy.where(self.durations == tau)
+            matches = numpy.logical_and(self.durations >= tau, self.durations < tau + dtau)
             f_tilde[i] = self.weights[matches].sum()/(maxduration-tau+1)
-        f_tilde /= f_tilde.sum()*dtau
+        if f_tilde.sum() != 0:
+            f_tilde /= f_tilde.sum()*dtau
 
         self.f_tilde = f_tilde
 
@@ -114,4 +115,6 @@ class DurationCorrection(object):
                 integral1[i] = numpy.trapz(f_tilde[:i+1], taugrid[:i+1])
         self.F_tilde = integral1
         integral2 = numpy.trapz(integral1, taugrid)
+        if integral2 == 0:
+            return 0.
         return maxduration/integral2
