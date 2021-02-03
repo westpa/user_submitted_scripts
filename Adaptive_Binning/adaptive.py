@@ -38,7 +38,7 @@ mincap=[-inf]  #for each dimension enter the minimum number at which binning can
 
 targetstate=[2.6]    #enter boundaries for target state or None if there is no target state in that dimension
 
-targetstatedirection=[-1]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1
+targetstatedirection=[-1]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
 
 activetarget=1		#if there is no target state make this zero
 
