@@ -148,7 +148,7 @@ class WESimManager:
         min_bin_prob = bin_probs[bin_probs!=0].min()
         max_bin_prob = bin_probs.max()
         bin_drange = math.log(max_bin_prob/min_bin_prob)
-        n_pop = len(bin_counts[bin_counts!=0])
+        n_pop = int(len(segments)/target_counts[0])
         
         self.rc.pstatus('{:d} of {:d} ({:%}) active bins are populated'.format(n_pop, n_active_bins,n_pop/n_active_bins))
         self.rc.pstatus('per-bin minimum non-zero probability:       {:g}'.format(min_bin_prob))
