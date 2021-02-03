@@ -31,8 +31,8 @@ def main():
     timepoints_per_iteration = 3
 
     # buffer to hold the corrected rate values; 
-    raw_rates = numpy.zeros(n_iterations+1)
-    rates = numpy.zeros(n_iterations+1)
+    raw_rates = numpy.zeros(n_iterations)
+    rates = numpy.zeros(n_iterations)
     # loop through all iterations
     for iiter in range(1,n_iterations+1):
         print(iiter)
