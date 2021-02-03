@@ -35,23 +35,23 @@ class DurationCorrection(object):
         weights = []
         durations = []
         for path in kinetics_path_list: 
-            kinetics_file = h5py.File(path, 'r')
-            if lastiter is not None:
-                where = numpy.where(
-                    numpy.logical_and(kinetics_file['durations'][:lastiter]\
-                                                   ['weight'] > 0,
-                                      kinetics_file['durations'][:lastiter]\
-                                                   ['fstate'] == fstate))
-                d = kinetics_file['durations'][:lastiter]['duration'] 
-                w = kinetics_file['durations'][:lastiter]['weight']
-            else:
-                where = numpy.where(
-                    numpy.logical_and(kinetics_file['durations']\
-                                                   ['weight'] > 0,
-                                      kinetics_file['durations']\
-                                                   ['fstate'] == fstate))
-                d = kinetics_file['durations']['duration'] 
-                w = kinetics_file['durations']['weight']
+            with h5py.File(path, 'r') as kinetics_file:
+                if lastiter is not None:
+                    where = numpy.where(
+                        numpy.logical_and(kinetics_file['durations'][:lastiter]\
+                                                       ['weight'] > 0,
+                                          kinetics_file['durations'][:lastiter]\
+                                                       ['fstate'] == fstate))
+                    d = kinetics_file['durations'][:lastiter]['duration'] 
+                    w = kinetics_file['durations'][:lastiter]['weight']
+                else:
+                    where = numpy.where(
+                        numpy.logical_and(kinetics_file['durations']\
+                                                       ['weight'] > 0,
+                                          kinetics_file['durations']\
+                                                       ['fstate'] == fstate))
+                    d = kinetics_file['durations']['duration'] 
+                    w = kinetics_file['durations']['weight']
             for i in range(where[1].shape[0]):
                 weight = w[where[0][i],where[1][i]]
                 duration = d[where[0][i],where[1][i]]
