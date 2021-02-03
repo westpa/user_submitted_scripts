@@ -14,8 +14,8 @@ def rateanalysis(lastiter, directh5path, timepoints_per_iteration):
     dc.from_list([directh5path], 0, lastiter=lastiter)
     correction = dc.correction(lastiter, timepoints_per_iteration)
 
-    directh5 = h5py.File(directh5path, 'r')
-    raw_rate = directh5['rate_evolution'][lastiter-1][1][0]['expected']
+    with h5py.File(directh5path, 'r') as directh5:
+        raw_rate = directh5['rate_evolution'][lastiter-1][1][0]['expected']
     raw_rate = raw_rate/(tau*concentration)
     rate = raw_rate*correction
     return raw_rate, rate
