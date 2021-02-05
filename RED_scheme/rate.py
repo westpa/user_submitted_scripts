@@ -1,21 +1,17 @@
 #!/usr/bin/env python
-import sys
-import durationcorrection
+from durationcorrection import DurationCorrection
 import h5py
-import matplotlib
-import matplotlib.pyplot as pyplot
 import numpy
 
 tau = 1
 concentration = 1
 
-def rateanalysis(lastiter, directh5path, timepoints_per_iteration):
-    dc = durationcorrection.DurationCorrection()
-    dc.from_list([directh5path], 0, lastiter=lastiter)
+def rateanalysis(lastiter, directh5path, istate, fstate, timepoints_per_iteration):
+    dc = DurationCorrection.from_list([directh5path], istate, fstate, lastiter=lastiter)
     correction = dc.correction(lastiter, timepoints_per_iteration)
 
     with h5py.File(directh5path, 'r') as directh5:
-        raw_rate = directh5['rate_evolution'][lastiter-1][1][0]['expected']
+        raw_rate = directh5['rate_evolution'][lastiter-1][istate][fstate]['expected']
     raw_rate = raw_rate/(tau*concentration)
     rate = raw_rate*correction
     return raw_rate, rate
@@ -34,11 +30,11 @@ def main():
     raw_rates = numpy.zeros(n_iterations)
     rates = numpy.zeros(n_iterations)
     # loop through all iterations
-    for iiter in range(1,n_iterations+1):
-        print(iiter)
+    for i in range(n_iterations):
+        print("iter %d"%(i + 1))
         # calculate corrected rate using data up to iteration iiter
         # and store the result in the buffer
-        raw_rates[iiter-1], rates[iiter-1] = rateanalysis(iiter, directh5path, timepoints_per_iteration)
+        raw_rates[i], rates[i] = rateanalysis(i + 1, directh5path, 1, 0, timepoints_per_iteration)
 
     # calculate the mean and sem for both raw and corrected rates
 #    raw_rates_mean = numpy.mean(raw_rates, axis=1)
