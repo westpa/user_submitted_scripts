@@ -17,14 +17,18 @@ def rateanalysis(lastiter, directh5path, istate, fstate, timepoints_per_iteratio
     return raw_rate, rate
 
 def main():
-    # number of iterations in the simulation
-    n_iterations = 2000
     # path to the w_direct output files
     directh5path = './direct.h5'
     # number of timepoints per iteration; since the last timepoint of one 
     # iteration overlaps with the first timepoint of the next, we typically
     # have an odd number here (like 11 or 21 or 51).
     timepoints_per_iteration = 3
+    
+    # number of iterations in the simulation
+    n_iterations = None
+    if n_iterations is None:
+        with h5py.File(directh5path, 'r') as directh5:
+            n_iterations = directh5['rate_evolution'].shape[0]
 
     # buffer to hold the corrected rate values; 
     raw_rates = numpy.zeros(n_iterations)
