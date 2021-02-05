@@ -3,16 +3,16 @@ from durationcorrection import DurationCorrection
 import h5py
 import numpy
 
-tau = 1
-concentration = 1
+TAU = 100
+CONCENTRATION = 1
 
-def rateanalysis(lastiter, directh5path, istate, fstate, timepoints_per_iteration):
+def rateanalysis(lastiter, directh5path, istate, fstate, timepoints_per_iteration, tau=TAU, conc=CONCENTRATION):
     dc = DurationCorrection.from_files([directh5path], istate, fstate, lastiter=lastiter)
     correction = dc.correction(lastiter, timepoints_per_iteration)
 
     with h5py.File(directh5path, 'r') as directh5:
         raw_rate = directh5['rate_evolution'][lastiter-1][istate][fstate]['expected']
-    raw_rate = raw_rate/(tau*concentration)
+    raw_rate = raw_rate/(tau*conc)
     rate = raw_rate*correction
     return raw_rate, rate
 
