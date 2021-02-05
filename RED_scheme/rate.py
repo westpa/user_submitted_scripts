@@ -7,7 +7,7 @@ tau = 1
 concentration = 1
 
 def rateanalysis(lastiter, directh5path, istate, fstate, timepoints_per_iteration):
-    dc = DurationCorrection.from_list([directh5path], istate, fstate, lastiter=lastiter)
+    dc = DurationCorrection.from_files([directh5path], istate, fstate, lastiter=lastiter)
     correction = dc.correction(lastiter, timepoints_per_iteration)
 
     with h5py.File(directh5path, 'r') as directh5:
