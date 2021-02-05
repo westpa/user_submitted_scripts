@@ -56,7 +56,7 @@ class DurationCorrection(object):
         self.durations = numpy.array(durations)
 
     def correction(self, maxduration, timepoints):
-        """
+        '''
         Return the correction factor
             
         __                              __  -1
@@ -84,7 +84,7 @@ class DurationCorrection(object):
         timepoints: The number of timepoints per iteration, including the first
             and last timepoints. For example, a simulation with outputs every
             1 ps and tau=20 ps should have timepoints=21.
-        """
+        '''
         dtau = 1./(timepoints-1)
 
         #      ~
