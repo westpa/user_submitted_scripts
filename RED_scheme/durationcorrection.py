@@ -8,7 +8,7 @@ event duration distribution is estimated from observed event durations,
 accounting for the fact that the probability of observing an event of a given
 duration is not proportional to the duration of that event.
 
-After specifying data to the DurationCorrection class via ``from_list``, call
+After specifying data to the DurationCorrection class via ``from_files``, call
 ``correction`` to return the correction factor
 
         __                              __  -1
@@ -30,7 +30,7 @@ duration time tau.
 
 class DurationCorrection(object):
     @staticmethod
-    def from_files(kinetics_files, istate, fstate, lastiter=2000, **kwargs):
+    def from_files(kinetics_files, istate, fstate, lastiter=None, **kwargs):
         weights = []
         durations = []
         for path in kinetics_files: 
