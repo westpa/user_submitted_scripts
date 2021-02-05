@@ -30,10 +30,10 @@ duration time tau.
 
 class DurationCorrection(object):
     @staticmethod
-    def from_list(kinetics_path_list, istate, fstate, lastiter=2000, **kwargs):
+    def from_files(kinetics_files, istate, fstate, lastiter=2000, **kwargs):
         weights = []
         durations = []
-        for path in kinetics_path_list: 
+        for path in kinetics_files: 
             with h5py.File(path, 'r') as kinetics_file:
                 if lastiter is not None:
                     dataset = kinetics_file['durations'][:lastiter]
