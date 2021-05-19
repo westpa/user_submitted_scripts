@@ -32,13 +32,13 @@ binsperdim=[5,5,3]   # You will have prod(binsperdim)+numberofdim*(2+2*splitIsol
 
 pcoordlength=101 # length of the pcoord
 
-maxcap=[20]	#for each dimension enter the maximum number at which binning can occur, if you do not wish to have a cap use inf
+maxcap=[inf,inf,inf]	#for each dimension enter the maximum number at which binning can occur, if you do not wish to have a cap use inf
 
-mincap=[-inf]  #for each dimension enter the minimum number at which binning can occur, if you do not wish to have a cap use -inf
+mincap=[-inf,-inf,-inf]  #for each dimension enter the minimum number at which binning can occur, if you do not wish to have a cap use -inf
 
-targetstate=[2.6]    #enter boundaries for target state or None if there is no target state in that dimension
+targetstate=[[2.6,10,None]]    #enter boundaries for target state or None if there is no target state in that dimension
 
-targetstatedirection=[-1]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
+targetstatedirection=[[-1,1,1]]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
 
 activetarget=1		#if there is no target state make this zero
 
@@ -156,9 +156,9 @@ def function_map(coords, mask, output):
 		
 			for l in range(len(targetstate[k])):
 
-				if (activetarget==1) and targetstate[k,l] is not None:
+				if (activetarget==1) and targetstate[k][l] is not None:
 
-					if (originalcoords[i,n]*targetstatedirection[n]) >= (targetstate[n]*targetstatedirection[n]): #if the target state has been reached assign to following bin
+					if (originalcoords[i,l]*targetstatedirection[k][l]) >= (targetstate[k][l]*targetstatedirection[k][l]): #if the target state has been reached assign to following bin
 
 						intarget=True
 					
@@ -170,7 +170,7 @@ def function_map(coords, mask, output):
 
 			if intarget:
 	
-				k=len(targetstate[k])
+				k=len(targetstate)
 	
 				binnumber=prod(binsperdim)+numberofdim*2
 		
