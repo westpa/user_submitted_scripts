@@ -11,7 +11,7 @@ Maxcap: The max cap in the given dimension ensures that there will be no more th
 
 Mincap: Same as max cap but with minimum and less than.
 
-Target State: Determines the boundary for passing into the target state in specified dimension.
+Target State: Determines the boundary for passing into the target state in specified dimension. Adaptive.py currently marks a threshold being crossed in any dimension as being in a target state. If you want to require a threshold being crossed in a way that is a combination of and/or statements refer to adaptiveWithanor.py
 
 Target State Direction: Used to determine the direction in from which the initial state goes toward the target state.
 
