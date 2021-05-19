@@ -36,6 +36,8 @@ maxcap=[inf,inf,inf]	#for each dimension enter the maximum number at which binni
 
 mincap=[-inf,-inf,-inf]  #for each dimension enter the minimum number at which binning can occur, if you do not wish to have a cap use -inf
 
+#How and or target states works is the following. Both target state and target state direction are arrays of arrays. Inner arrays act as and statements while outer arrays impose or conditions. Internal arrays follow the indexing of the dimensions.
+
 targetstate=[[2.6,10,None]]    #enter boundaries for target state or None if there is no target state in that dimension
 
 targetstatedirection=[[-1,1,1]]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
