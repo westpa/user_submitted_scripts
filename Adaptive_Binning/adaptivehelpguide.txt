@@ -6,13 +6,12 @@ Number of Dimensions: If possible, one may want to try more dimensions if possib
 
 Bins per Dimension: Raising bins per dimension is assumed to be most effective in obtaining accurate rate constants since it increases probaility of repeat succesful (non leading walkers). Raising this of course increases computation time and this increases is of the order of the number of dimensions.
 
-PCA: If the dimensions being used are correlated, turning this on will attempt to make more efficent usage of designated bins by performing change to the principal components of the current distribution of walkers.
 
 Maxcap: The max cap in the given dimension ensures that there will be no more than one bin worth of walkers having greater than the maxcap progress coordinate.
 
 Mincap: Same as max cap but with minimum and less than.
 
-Target State: Determines the boundary for passing into the target state in specified dimension.
+Target State: Determines the boundary for passing into the target state in specified dimension. Adaptive.py currently marks a threshold being crossed in any dimension as being in a target state. If you want to require a threshold being crossed in a way that is a combination of and/or statements refer to adaptiveWithanor.py
 
 Target State Direction: Used to determine the direction in from which the initial state goes toward the target state.
 

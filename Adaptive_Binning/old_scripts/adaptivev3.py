@@ -38,7 +38,7 @@ mincap=[-inf]  #for each dimension enter the minimum number at which binning can
 
 targetstate=[2.6]    #enter boundaries for target state or None if there is no target state in that dimension
 
-targetstatedirection=[-1]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
+targetstatedirection=-1  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1
 
 activetarget=1		#if there is no target state make this zero
 
@@ -154,7 +154,7 @@ def function_map(coords, mask, output):
 
 			if (activetarget==1) and targetstate[n] is not None:
 
-				if (originalcoords[i,n]*targetstatedirection[n]) >= (targetstate[n]*targetstatedirection[n]): #if the target state has been reached assign to following bin
+				if (originalcoords[i,n]*targetstatedirection) >= (targetstate[n]*targetstatedirection): #if the target state has been reached assign to following bin
 
 					binnumber=prod(binsperdim)+numberofdim*2
 

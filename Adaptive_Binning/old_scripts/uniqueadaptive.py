@@ -154,7 +154,7 @@ def function_map(coords, mask, output):
 
 			if (activetarget==1) and targetstate[n] is not None:
 
-				if (originalcoords[i,n]*targetstatedirection[n]) >= (targetstate[n]*targetstatedirection[n]): #if the target state has been reached assign to following bin
+				if ((originalcoords[i,0]*targetstatedirection[0]) >= (targetstate[0]*targetstatedirection[0]) and (originalcoords[i,1]*targetstatedirection[1]) >= (targetstate[1]*targetstatedirection[1])): #if the target state has been reached assign to following bin
 
 					binnumber=prod(binsperdim)+numberofdim*2
 
