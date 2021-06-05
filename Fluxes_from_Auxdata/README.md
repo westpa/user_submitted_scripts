@@ -1,0 +1,1 @@
+Run the aux_flux.sh file to generate an assign and direct h5 data file for your WESTPA simulation using the auxiliary dataset defined in module.py and the analysis scheme defined in west.cfg (feel free to copy over your own west.cfg file).
