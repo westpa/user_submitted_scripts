@@ -1,0 +1,73 @@
+#!/bin/bash -x
+#BSUB -nnodes 2
+#BSUB -P LSC115
+#BSUB -q batch-hm
+#BSUB -J westpa
+#BSUB -W 0:30
+#BSUB -e job_logs/%J.err
+#BSUB -o job_logs/%J.out
+#BSUB -alloc_flags gpudefault
+
+
+set -x
+cd $LS_SUBCWD
+export LMOD_SH_DBG_ON=1
+source env.sh || exit 1
+
+module load bzip2/1.0.6
+module load zlib/1.2.11
+
+export SERVER_INFO=$WEST_SIM_ROOT/west_zmq_info-$LSB_JOBID.json
+
+echo "Starting server $SERVER_INFO"
+
+echo $CUDA_VISIBLE_DEVICES
+
+echo ${LSB_HOSTS}
+echo ${LSB_JOBID}
+
+# start server
+jsrun -n1 w_run --zmq-startup-timeout 360 --zmq-shutdown-timeout 360 --zmq-timeout-factor $WM_ZMQ_TIMEOUT_FACTOR --zmq-master-heartbeat $WM_ZMQ_MASTER_HEARTBEAT --zmq-worker-heartbeat $WM_ZMQ_WORKER_HEARTBEAT --zmq-write-host-info=$SERVER_INFO --work-manager=zmq --n-workers=0 --zmq-mode=master --zmq-comm-mode=tcp &>> west-$LSB_JOBID.log &
+echo "Server started, making file"
+
+# wait a minute for host info file
+for ((n=0; n<60; n++)); do
+    if [ -e $SERVER_INFO ] ; then
+        echo "== server info file $SERVER_INFO =="
+        cat $SERVER_INFO
+        echo -e "\n"
+        break
+    fi
+    sleep 1
+done
+
+# exit if host info file doesn't appear in one minute
+if ! [ -e $SERVER_INFO ] ; then
+    echo 'server failed to start'
+    exit 1
+fi
+
+#Run clients
+
+echo "Number of hosts" $(( `echo $LSB_HOSTS | tr ' ' "\n" | sort -u | wc -l`-1 ))
+jsrun -i --nrs=$(( `echo $LSB_HOSTS | tr ' ' "\n" | sort -u | wc -l`-1 )) --gpu_per_rs=4 --cpu_per_rs=5 --rs_per_host=1 --tasks_per_rs=1 --stdio_mode=individual --stdio_stdout="node_logs/out" --stdio_stderr="node_logs/err" bash -c " \
+    cd $LS_SUBCWD && \
+    echo \`hostname\` && \
+    source env.sh && \
+    export gpus=4
+    export CUDA_VISIBLE_DEVICES=\`echo \$(seq 0 1 \$((gpus-1)))  | tr ' ' ','\` && \
+    export CUDA_VISIBLE_DEVICES_ALLOCATED=\$CUDA_VISIBLE_DEVICES && \
+    printenv | sort && \
+    w_run "$@" \
+        --work-manager=zmq \
+        --zmq-mode=client  \
+        --n-workers=\$gpus \
+        --zmq-read-host-info=$SERVER_INFO \
+        --zmq-comm-mode=tcp \
+        --zmq-master-heartbeat \$WM_ZMQ_MASTER_HEARTBEAT \
+        --zmq-worker-heartbeat \$WM_ZMQ_WORKER_HEARTBEAT \
+        --zmq-startup-timeout 360 \
+        --zmq-shutdown-timeout 360 \
+        --zmq-timeout-factor \$WM_ZMQ_TIMEOUT_FACTOR"
+
+wait
