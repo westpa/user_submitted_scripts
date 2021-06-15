@@ -1,7 +1,7 @@
 Overview
 --------
 
-The bash script (run.lsf.all) was written by Tanner and Vipin Sachdeva (Roivant Sciences). This is
+The bash script (run.lsf.all) was written by Tanner Wilkerson and Vipin Sachdeva. This is
 a sample script used to submit WESTPA jobs to a LSF queuing system.
 
 
