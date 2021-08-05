@@ -278,3 +278,19 @@ def function_map(coords, output):
         output[i] = binnumber
 
     return output
+
+class System(WESTSystem): #class initialization
+
+	def initialize(self):
+
+		self.pcoord_ndim = numberofdim
+
+		self.pcoord_len = pcoordlength
+
+		self.pcoord_dtype = numpy.float32 
+
+		self.bin_mapper = FuncBinMapper(function_map, binsperdim+6+2*numberofdim+binnumber) #Changed binsperbin to binsperdim
+ 
+		self.bin_target_counts = numpy.empty((self.bin_mapper.nbins,), numpy.int_)
+
+		self.bin_target_counts[...] = bintargetcount
