@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=GPU
-#SBATCH --output=slurm.out
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
-#SBATCH --cluster=gpu
-#SBATCH --partition=gtx1080
-#SBATCH --gres=gpu:4
-#SBATCH --time=24:00:00
+#SBATCH --job-name=PROJECTNAME
+#SBATCH --output=job_logs/slurm_test_westpa.out
+#SBATCH --error=job_logs/slurm_test_westpa.err
+#SBATCH --nodes=1 
+#SBATCH --partition GPU
+#SBATCH --ntasks-per-node=8
+#SBATCH --gpus=8
+#SBATCH --time=48:00:00
+#SBATCH --mem=192gb
 
 set -x
 cd $SLURM_SUBMIT_DIR
@@ -38,9 +39,12 @@ fi
 
 # start clients, with the proper number of cores on each
 
+scontrol show hostname $SLURM_NODELIST >& SLURM_NODELIST.log
+
 for node in $(scontrol show hostname $SLURM_NODELIST); do
-    ssh -o StrictHostKeyChecking=no $node $PWD/node.sh $SLURM_SUBMIT_DIR $SLURM_JOBID $node --work-manager=zmq --zmq-mode=client --zmq-read-host-info=$SERVER_INFO --zmq-comm-mode=tcp &
+    ssh -o StrictHostKeyChecking=no $node $PWD/node.sh $SLURM_SUBMIT_DIR $SLURM_JOBID $node $CUDA_VISIBLE_DEVICES --work-manager=zmq --n-workers=8 --zmq-mode=client --zmq-read-host-info=$SERVER_INFO --zmq-comm-mode=tcp & #MODIFY --n-workers to the same number of gpus you have!
 done
 
 
 wait
+

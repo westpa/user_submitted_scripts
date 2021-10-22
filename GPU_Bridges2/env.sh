@@ -1,25 +1,21 @@
 # Modify to taste
 
 # Load Modules
-module purge
-module load intel/2017.3.196 amber/18
+module load cuda/10.2.0
+module load intel/20.4
 
-module unload python
-module load cuda/8.0.44
-#module load intel-mpi
-export CUDA_HOME=/opt/packages/cuda/8.0
-export LD_LIBRARY_PATH=/opt/packages/cuda/8.0/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=/jet/packages/spack/opt/spack/linux-centos8-zen/gcc-8.3.1/cuda-10.2.89-kz7u4ix6ed53nioz4ycqin3kujcim3bs
+export LD_LIBRARY_PATH=/jet/packages/spack/opt/spack/linux-centos8-zen/gcc-8.3.1/cuda-10.2.89-kz7u4ix6ed53nioz4ycqin3kujcim3bs/lib64:$LD_LIBRARY_PATH
 
 # This is our local scratch, where we'll store files during the dynamics.
 export NODELOC=$LOCAL
 export USE_LOCAL_SCRATCH=1
 
-# Inform WEST where to find Python and our other scripts where to find WEST
-export WEST_PYTHON=$(which python2.7)
-if [[ -z "$WEST_ROOT" ]]; then
-    echo "Must set environ variable WEST_ROOT"
-    exit
-fi
+# This calls the correct installations of Amber and WESTPA #MODIFY
+. ~/.bashrc
+source $AMBERHOME/amber.sh
+conda activate westpa-2020.05 #MODIFY conda environment name
+# source $WEST_ROOT/westpa.sh #MODIFY ; alternative way to source westpa.sh
 
 # Explicitly name our simulation root directory
 if [[ -z "$WEST_SIM_ROOT" ]]; then
@@ -58,5 +54,5 @@ export MKDIR=$SWROOT/bin/mkdir
 export ECHO=$SWROOT/bin/echo
 export DATE=$SWROOT/bin/date
 export SANDER=$AMBERHOME/bin/sander
-export PMEMD=$AMBERHOME/bin/pmemd.cuda
+export PMEMD=/$AMBERHOME/bin/pmemd.cuda
 export CPPTRAJ=$AMBERHOME/bin/cpptraj
