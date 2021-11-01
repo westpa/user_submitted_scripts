@@ -1,10 +1,10 @@
 import numpy 
 import westpa
 import os
-from westpa.core.systems import WESTSystem
-from westpa.core.binning import RectilinearBinMapper 
-from westpa.core.binning import FuncBinMapper 
-from westpa.core.binning import RecursiveBinMapper 
+from west.systems import WESTSystem
+from westpa.binning import RectilinearBinMapper 
+from westpa.binning import FuncBinMapper 
+from westpa.binning import RecursiveBinMapper 
 import logging
 
 log = logging.getLogger(__name__)
@@ -152,7 +152,7 @@ class SDASystem(WESTSystem):
         #      | TARGET |           adaptive_mapper0                    |
         #      | STATE  |                                               |
         #     0 --------------------------------------------------------
-        #              3.5 (soft bound via mincap)                     inf
+        #              3.5(soft bound via mincap)                      inf
         #                        Dimension 1 of pcoord
         #
         #######################################################################
