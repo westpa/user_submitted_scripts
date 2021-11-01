@@ -6,7 +6,7 @@ These are the instructions and necessary files needed for running the Adaptive A
 Using the script
 ----------------
 
-1.	Download the following three files from Github Repository adaptive.py, manager.py, WE_driver.py and place them in the directory you are running the simulation from (WEST_SIM_ROOT)
+1.	Download the following three files from Github Repository adaptive.py, manager.py, driver.py and place them in the directory you are running the simulation from (WEST_SIM_ROOT)
 2.	In your west.cfg file you want the following
 west:
   system:
