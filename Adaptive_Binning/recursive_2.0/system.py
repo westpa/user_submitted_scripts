@@ -25,7 +25,7 @@ numberofdim=1  # number of dimensions. If using recursive, this should be for th
 binsperdim=[15]   # You will have prod(binsperdim)+numberofdim*(2+2*splitIsolated)+activetarget bins total for that mab
 pcoordlength=51 # length of the pcoord
 maxcap=[[numpy.inf,8],[numpy.inf,numpy.inf]]    #MAB doesn't respect the outter mapper boundaries so make sure you set the caps of each one in sync with the outer rectilinear bin you want contained
-mincap=[[3.5,0],[0,numpy.inf]]  #They are nested because you could have multiple MAB schemes nested in different bins. The each min/max cap entry should be in sync with multi_idx. For each entry, left is the first dimension, right is the second, etc.
+mincap=[[3.5,0],[0,8]]  #They are nested because you could have multiple MAB schemes nested in different bins. The each min/max cap entry should be in sync with multi_idx. For each entry, left is the first dimension, right is the second, etc.
 
 targetstate=[3.5, 8]    #enter boundaries for target state or None if there is no target state in that dimension
 targetstatedirection=[-1, -1]  #if your target state is meant to be greater that the starting pcoor use 1 or else use -1. This will be done for each dimension in your simulation
