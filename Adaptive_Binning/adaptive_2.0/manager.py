@@ -14,6 +14,7 @@ from westpa.core import wm_ops
 from westpa.core.data_manager import weight_dtype
 
 from pickle import PickleError
+from os import remove
 
 EPS = numpy.finfo(weight_dtype).eps
 
@@ -649,6 +650,7 @@ class WESimManager:
     
                 self.n_iter += 1
                 self.data_manager.current_iteration += 1
+                remove('binbounds.txt')
 
                 try:
                     #This may give NaN if starting a truncated simulation
