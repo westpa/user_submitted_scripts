@@ -101,11 +101,29 @@ class WESimManager:
             except KeyError:
                 raise KeyError('invalid hook {!r}'.format(hook))
             
+        # It's possible to register a callback that's a duplicate function, but at a different place in memory.
+        #   For example, if you launch a run without clearing state from a previous run.
+        #   More details on this are available in https://github.com/westpa/westpa/issues/182 but the below code
+        #   handles specifically the problem that causes in plugin loading.
         try:
-            self._callback_table[hook].add((priority,function.__name__,function))
+            # Before checking for set membership of (priority, function.__name__, function), just check
+            #   function names for collisions in this hook.
+            hook_function_names = [callback[1] for callback in self._callback_table[hook]]
         except KeyError:
-            self._callback_table[hook] = set([(priority,function.__name__,function)])
-        
+            # If there's no entry in self._callback_table for this hook, then there definitely aren't any collisions
+            #   because no plugins are registered to it yet in the first place.
+            pass
+        else:
+            # If there are plugins registered to this hook, check for duplicate names.
+            if function.__name__ in hook_function_names:
+                log.debug("This plugin has already been loaded, skipping")
+                return
+
+        try:
+            self._callback_table[hook].add((priority, function.__name__, function))
+        except KeyError:
+            self._callback_table[hook] = set([(priority, function.__name__, function)])
+
         log.debug('registered callback {!r} for hook {!r}'.format(function, hook))
                 
     def invoke_callbacks(self, hook, *args, **kwargs):
@@ -171,28 +189,36 @@ class WESimManager:
             if numpy.isnan(iter_summary['walltime']): iter_summary['walltime'] = 0.0
             self.data_manager.update_iter_summary(iter_summary)
 
-    def get_bstate_pcoords(self, basis_states):
+    def get_bstate_pcoords(self, basis_states, label='basis'):
         '''For each of the given ``basis_states``, calculate progress coordinate values
         as necessary.  The HDF5 file is not updated.'''
-        
-        self.rc.pstatus('Calculating progress coordinate values for basis states.')
-        futures = [self.work_manager.submit(wm_ops.get_pcoord, args=(basis_state,))
-                   for basis_state in basis_states]
+
+        self.rc.pstatus('Calculating progress coordinate values for {} states.'.format(label))
+        futures = [self.work_manager.submit(wm_ops.get_pcoord, args=(basis_state,)) for basis_state in basis_states]
         fmap = {future: i for (i, future) in enumerate(futures)}
-        for future in self.work_manager.as_completed(futures): 
+        for future in self.work_manager.as_completed(futures):
             basis_states[fmap[future]].pcoord = future.get_result().pcoord
         
-    def report_basis_states(self, basis_states):
+    def report_basis_states(self, basis_states, label='basis'):
         pstatus = self.rc.pstatus
-        pstatus('{:d} basis state(s) present'.format(len(basis_states)), end='')
+        pstatus('{:d} {} state(s) present'.format(len(basis_states), label), end='')
         if self.rc.verbose_mode:
             pstatus(':')
-            pstatus('{:6s}    {:12s}    {:20s}    {:20s}    {}'
-                             .format('ID', 'Label', 'Probability', 'Aux Reference', 'Progress Coordinate'))
+            pstatus(
+                '{:6s}    {:12s}    {:20s}    {:20s}    {}'.format(
+                    'ID', 'Label', 'Probability', 'Aux Reference', 'Progress Coordinate'
+                )
+            )
             for basis_state in basis_states:
-                pstatus('{:<6d}    {:12s}    {:<20.14g}    {:20s}    {}'.
-                                 format(basis_state.state_id, basis_state.label, basis_state.probability, basis_state.auxref or '',
-                                        ', '.join(map(str,basis_state.pcoord))))
+                pstatus(
+                    '{:<6d}    {:12s}    {:<20.14g}    {:20s}    {}'.format(
+                        basis_state.state_id,
+                        basis_state.label,
+                        basis_state.probability,
+                        basis_state.auxref or '',
+                        ', '.join(map(str, basis_state.pcoord)),
+                    )
+                )
         pstatus()
         self.rc.pflush()
         
@@ -208,12 +234,12 @@ class WESimManager:
         pstatus()
         self.rc.pflush()
         
-    def initialize_simulation(self, basis_states, target_states, segs_per_state=1, suppress_we=False):
+    def initialize_simulation(self, basis_states, target_states, start_states, segs_per_state=1, suppress_we=False):
         '''Initialize a new weighted ensemble simulation, taking ``segs_per_state`` initial
         states from each of the given ``basis_states``.
-        
+
         ``w_init`` is the forward-facing version of this function'''
-        
+
         data_manager = self.data_manager
         work_manager = self.work_manager
         pstatus = self.rc.pstatus
@@ -226,12 +252,33 @@ class WESimManager:
         data_manager.save_target_states(target_states)
         self.report_target_states(target_states)
 
-        
         # Process basis states
-        self.get_bstate_pcoords(basis_states)        
+        self.get_bstate_pcoords(basis_states)
         self.data_manager.create_ibstate_group(basis_states)
+        self.data_manager.create_ibstate_iter_h5file(basis_states)
         self.report_basis_states(basis_states)
-        
+
+        # Process start states
+        # Unlike the above, does not create an ibstate group.
+        # TODO: Should it? I don't think so, if needed it can be traced back through basis_auxref
+
+        # Here, we are trying to assign a state_id to the start state to be initialized, without actually
+        # saving it to the ibstates records in any of the h5 files. It might actually be a problem
+        # when tracing trajectories with westpa.analysis (especially with HDF5 framework) since it would
+        # try to look for a basis state id > len(basis_state).
+        # Since start states are only used while initializing and iteration 1, it's ok to not save it to save space. If necessary,
+        # the structure can be traced directly to the parent file using the standard basis state logic referencing
+        # west[iterations/iter_00000001/ibstates/istate_index/basis_auxref] of that istate.
+
+        if len(start_states) > 0 and start_states[0].state_id is None:
+            last_id = basis_states[-1].state_id
+            for start_state in start_states:
+                start_state.state_id = last_id + 1
+                last_id += 1
+
+        self.get_bstate_pcoords(start_states, label='start')
+        self.report_basis_states(start_states, label='start')
+
         pstatus('Preparing initial states')
         initial_states = []
         weights = []
@@ -239,19 +286,34 @@ class WESimManager:
             istate_type = InitialState.ISTATE_TYPE_GENERATED
         else:
             istate_type = InitialState.ISTATE_TYPE_BASIS
-            
+
         for basis_state in basis_states:
             for _iseg in range(segs_per_state):
-                initial_state = data_manager.create_initial_states(1,1)[0]
-                initial_state.basis_state_id =  basis_state.state_id
+                initial_state = data_manager.create_initial_states(1, 1)[0]
+                initial_state.basis_state_id = basis_state.state_id
                 initial_state.basis_state = basis_state
                 initial_state.istate_type = istate_type
-                weights.append(basis_state.probability/segs_per_state)
+                weights.append(basis_state.probability / segs_per_state)
                 initial_states.append(initial_state)
-                
+
+        for start_state in start_states:
+            for _iseg in range(segs_per_state):
+                initial_state = data_manager.create_initial_states(1, 1)[0]
+                initial_state.basis_state_id = start_state.state_id
+                initial_state.basis_state = start_state
+                initial_state.basis_auxref = start_state.auxref
+
+                # Start states are assigned their own type, so they can be identified later
+                initial_state.istate_type = InitialState.ISTATE_TYPE_START
+                weights.append(start_state.probability / segs_per_state)
+                initial_state.iter_used = 1
+                initial_states.append(initial_state)
+
         if self.do_gen_istates:
-            futures = [work_manager.submit(wm_ops.gen_istate, args=(initial_state.basis_state, initial_state))
-                       for initial_state in initial_states]
+            futures = [
+                work_manager.submit(wm_ops.gen_istate, args=(initial_state.basis_state, initial_state))
+                for initial_state in initial_states
+            ]
             for future in work_manager.as_completed(futures):
                 rbstate, ristate = future.get_result()
                 initial_states[ristate.state_id].pcoord = ristate.pcoord
@@ -260,15 +322,14 @@ class WESimManager:
                 basis_state = initial_state.basis_state
                 initial_state.pcoord = basis_state.pcoord
                 initial_state.istate_status = InitialState.ISTATE_STATUS_PREPARED
-                
-        for initial_state in initial_states:
-            log.debug('initial state created: {!r}'.format(initial_state))            
 
+        for initial_state in initial_states:
+            log.debug('initial state created: {!r}'.format(initial_state))
 
         # save list of initial states just generated
-        # some of these may not be used, depending on how WE shakes out                    
+        # some of these may not be used, depending on how WE shakes out
         data_manager.update_initial_states(initial_states, n_iter=1)
-                        
+
         if not suppress_we:
             self.we_driver.populate_initial(initial_states, weights, system)
             segments = list(self.we_driver.next_iter_segments)
@@ -277,43 +338,61 @@ class WESimManager:
             segments = list(self.we_driver.current_iter_segments)
             binning = self.we_driver.final_binning
 
-        bin_occupancies = numpy.fromiter(map(len,binning), dtype=numpy.uint, count=self.we_driver.bin_mapper.nbins)
-        target_occupancies = numpy.require(self.we_driver.bin_target_counts, dtype=numpy.uint)
-    
-        # Make sure we have 
+        bin_occupancies = np.fromiter(map(len, binning), dtype=np.uint, count=self.we_driver.bin_mapper.nbins)
+        target_occupancies = np.require(self.we_driver.bin_target_counts, dtype=np.uint)
+
+        # Make sure we have
         for segment in segments:
             segment.n_iter = 1
             segment.status = Segment.SEG_STATUS_PREPARED
             assert segment.parent_id < 0
-            assert initial_states[segment.initial_state_id].iter_used == 1        
-                    
+            assert initial_states[segment.initial_state_id].iter_used == 1
+
         data_manager.prepare_iteration(1, segments)
         data_manager.update_initial_states(initial_states, n_iter=1)
-                    
+
         if self.rc.verbose_mode:
             pstatus('\nSegments generated:')
             for segment in segments:
                 pstatus('{!r}'.format(segment))
-        
-        
-        pstatus('''
+
+        pstatus(
+            '''
         Total bins:            {total_bins:d}
         Initial replicas:      {init_replicas:d} in {occ_bins:d} bins, total weight = {weight:g}
         Total target replicas: {total_replicas:d}
-        '''.format(total_bins=len(bin_occupancies),
-                   init_replicas=int(sum(bin_occupancies)),
-                   occ_bins=len(bin_occupancies[bin_occupancies > 0]),
-                   weight = float(sum(segment.weight for segment in segments)),
-                   total_replicas = int(sum(target_occupancies))))
-        
-        # Send the segments over to the data manager to commit to disk            
+        '''.format(
+                total_bins=len(bin_occupancies),
+                init_replicas=int(sum(bin_occupancies)),
+                occ_bins=len(bin_occupancies[bin_occupancies > 0]),
+                weight=float(sum(segment.weight for segment in segments)),
+                total_replicas=int(sum(target_occupancies)),
+            )
+        )
+
+        total_prob = float(sum(segment.weight for segment in segments))
+        pstatus(f'1-prob: {1-total_prob:.4e}')
+
+        target_counts = self.we_driver.bin_target_counts
+        # Do not include bins with target count zero (e.g. sinks, never-filled bins) in the (non)empty bins statistics
+        n_active_bins = len(target_counts[target_counts != 0])
+        seg_probs = np.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
+        norm = seg_probs.sum()
+
+        if not abs(1 - norm) < EPS * (len(segments) + n_active_bins):
+            pstatus("Normalization check failed at w_init, explicitly renormalizing")
+            for segment in segments:
+                segment.weight /= norm
+
+        # Send the segments over to the data manager to commit to disk
         data_manager.current_iteration = 1
-        
+
         # Report statistics
         pstatus('Simulation prepared.')
         self.segments = {segment.seg_id: segment for segment in segments}
-        self.report_bin_statistics(binning,save_summary=True)
+        self.report_bin_statistics(binning, save_summary=True)
         data_manager.flush_backing()
+        data_manager.close_backing()
 
     def prepare_iteration(self):
         log.debug('beginning iteration {:d}'.format(self.n_iter))
