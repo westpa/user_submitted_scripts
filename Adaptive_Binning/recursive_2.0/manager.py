@@ -338,8 +338,8 @@ class WESimManager:
             segments = list(self.we_driver.current_iter_segments)
             binning = self.we_driver.final_binning
 
-        bin_occupancies = np.fromiter(map(len, binning), dtype=np.uint, count=self.we_driver.bin_mapper.nbins)
-        target_occupancies = np.require(self.we_driver.bin_target_counts, dtype=np.uint)
+        bin_occupancies = numpy.fromiter(map(len, binning), dtype=numpy.uint, count=self.we_driver.bin_mapper.nbins)
+        target_occupancies = numpy.require(self.we_driver.bin_target_counts, dtype=numpy.uint)
 
         # Make sure we have
         for segment in segments:
@@ -376,7 +376,7 @@ class WESimManager:
         target_counts = self.we_driver.bin_target_counts
         # Do not include bins with target count zero (e.g. sinks, never-filled bins) in the (non)empty bins statistics
         n_active_bins = len(target_counts[target_counts != 0])
-        seg_probs = np.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
+        seg_probs = numpy.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
         norm = seg_probs.sum()
 
         if not abs(1 - norm) < EPS * (len(segments) + n_active_bins):
@@ -461,7 +461,7 @@ class WESimManager:
 
         # Get the basis states and initial states for the next iteration, necessary for doing on-the-fly recycling
         self.next_iter_bstates = self.data_manager.get_basis_states(self.n_iter + 1)
-        self.next_iter_bstate_cprobs = np.add.accumulate([bstate.probability for bstate in self.next_iter_bstates])
+        self.next_iter_bstate_cprobs = numpy.add.accumulate([bstate.probability for bstate in self.next_iter_bstates])
 
         self.we_driver.avail_initial_states = {
             istate.state_id: istate for istate in self.data_manager.get_unused_initial_states(n_iter=self.n_iter + 1)
@@ -505,7 +505,7 @@ class WESimManager:
         updated_states = []
         for _i in range(n_istates_needed):
             # Select a basis state according to its weight
-            ibstate = np.digitize([random.random()], self.next_iter_bstate_cprobs)
+            ibstate = numpy.digitize([random.random()], self.next_iter_bstate_cprobs)
             basis_state = self.next_iter_bstates[ibstate[0]]
             initial_state = self.data_manager.create_initial_states(1, n_iter=self.n_iter + 1)[0]
             initial_state.iter_created = self.n_iter
