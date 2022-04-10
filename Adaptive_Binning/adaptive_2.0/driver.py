@@ -8,6 +8,7 @@ import random
 
 import westpa
 from westpa.core.segment import Segment
+from westpa.core.states import InitialState
 
 class ConsistencyError(RuntimeError):
     pass

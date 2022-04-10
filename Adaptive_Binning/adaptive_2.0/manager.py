@@ -338,8 +338,8 @@ class WESimManager:
             segments = list(self.we_driver.current_iter_segments)
             binning = self.we_driver.final_binning
 
-        bin_occupancies = np.fromiter(map(len, binning), dtype=np.uint, count=self.we_driver.bin_mapper.nbins)
-        target_occupancies = np.require(self.we_driver.bin_target_counts, dtype=np.uint)
+        bin_occupancies = numpy.fromiter(map(len, binning), dtype=numpy.uint, count=self.we_driver.bin_mapper.nbins)
+        target_occupancies = numpy.require(self.we_driver.bin_target_counts, dtype=numpy.uint)
 
         # Make sure we have
         for segment in segments:
@@ -376,7 +376,7 @@ class WESimManager:
         target_counts = self.we_driver.bin_target_counts
         # Do not include bins with target count zero (e.g. sinks, never-filled bins) in the (non)empty bins statistics
         n_active_bins = len(target_counts[target_counts != 0])
-        seg_probs = np.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
+        seg_probs = numpy.fromiter(map(operator.attrgetter('weight'), segments), dtype=weight_dtype, count=len(segments))
         norm = seg_probs.sum()
 
         if not abs(1 - norm) < EPS * (len(segments) + n_active_bins):
