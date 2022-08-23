@@ -11,6 +11,6 @@ their binding. This setup generates binding pairs and their joint probabilities,
 has to then add the waters to each and do equilibration for all of them before running
 the WESTPA simulation of binding.
 
-In BNBS\_setup\_scripts folder you can find the scripts and confiuration files used for the 
+In BNBS\_setup\_scripts folder you can find the scripts and configuration files used for the 
 eventual WESTPA simulation. The custom initialization gives the west.h5 file required for
 the WESTPA simulation of binding. 
