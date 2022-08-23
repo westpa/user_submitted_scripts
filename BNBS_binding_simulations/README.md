@@ -12,5 +12,5 @@ has to then add the waters to each and do equilibration for all of them before r
 the WESTPA simulation of binding.
 
 In BNBS\_setup\_scripts folder you can find the scripts and configuration files used for the 
-eventual WESTPA simulation. The custom initialization gives the west.h5 file required for
-the WESTPA simulation of binding. 
+eventual WESTPA simulation of the binding process. The custom initialization gives the west.h5 file 
+required for the WESTPA simulation of binding. 
