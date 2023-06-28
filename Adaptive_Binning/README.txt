@@ -1,6 +1,8 @@
 Overview
 --------
 
+DEPRECATION WARNING: These versions of the Adaptive Algorithm (Minimal Adaptive Binning/MAB) is deprecated in favor of the bullt-in MAB BinMapper in WESTPA 2.0 (v2022.XX). The BinMapper includes the same functionality. For more information, see Tutorial 7.6 in our WESTPA Tutorials (https://github.com/westpa/tutorials).
+
 These are the instructions and necessary files needed for running the Adaptive Algorithm. The adaptive algorithm is designed to be used in n dimensions and with the enhanced feature favor multiple unique trajectories. Refer to (future paper) for more information.
 
 Using the script
