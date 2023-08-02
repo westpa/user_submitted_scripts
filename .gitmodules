@@ -1,0 +1,3 @@
+[submodule "Spike_Protein_WE_Simulations"]
+	path = Spike_Protein_WE_Simulations
+	url = https://github.com/shirleyahn/we_scripts
