@@ -1,0 +1,22 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -R yes
+#$ -cwd
+#$ -V
+#$ -N JobName
+#$ -j y
+#$ -pe omp 10
+#$ -l ngpus=1,rcpus=1
+#$ -P ProjectName
+#$ -q gpu_short_2080ti
+
+source ~/.bashrc
+conda activate westpa
+module load cuda/11.2
+
+export PATH=/data01/software/cuda11.2/bin:$PATH
+export LD_LIBRARY_PATH=/data01/software/cuda11.2/lib64/:$LD_LIBRARY_PATH
+export OPENMM_CUDA_COMPILER=$(which nvcc)
+echo $CUDA_VISIBLE_DEVICES
+
+w_run --work-manager=processes "$@" &> west.log
