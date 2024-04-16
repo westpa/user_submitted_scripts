@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import h5py
 import numpy
+
 '''
 Calculate factor to correct for nonzero durations of barrier crossings. The
 event duration distribution is estimated from observed event durations,
 accounting for the fact that the probability of observing an event of a given
 duration is not proportional to the duration of that event.
 
-After specifying data to the DurationCorrection class via ``from_list``, call
+After specifying data to the DurationCorrection class via ``from_files``, call
 ``correction`` to return the correction factor
 
         __                              __  -1
@@ -28,41 +29,32 @@ duration time tau.
 '''
 
 class DurationCorrection(object):
-    def __init__(self):
-        pass
-
-    def from_list(self, kinetics_path_list, fstate, lastiter=2000, **kwargs):
+    @staticmethod
+    def from_files(kinetics_files, istate, fstate, lastiter=None, **kwargs):
         weights = []
         durations = []
-        for path in kinetics_path_list: 
-            kinetics_file = h5py.File(path, 'r')
-            if lastiter is not None:
-                where = numpy.where(
-                    numpy.logical_and(kinetics_file['durations'][:lastiter]\
-                                                   ['weight'] > 0,
-                                      kinetics_file['durations'][:lastiter]\
-                                                   ['fstate'] == fstate))
-                d = kinetics_file['durations'][:lastiter]['duration'] 
-                w = kinetics_file['durations'][:lastiter]['weight']
-            else:
-                where = numpy.where(
-                    numpy.logical_and(kinetics_file['durations']\
-                                                   ['weight'] > 0,
-                                      kinetics_file['durations']\
-                                                   ['fstate'] == fstate))
-                d = kinetics_file['durations']['duration'] 
-                w = kinetics_file['durations']['weight']
-            for i in range(where[1].shape[0]):
-                weight = w[where[0][i],where[1][i]]
-                duration = d[where[0][i],where[1][i]]
-                if duration > 0:
-                    durations.append(duration)
+        for path in kinetics_files: 
+            with h5py.File(path, 'r') as kinetics_file:
+                if lastiter is not None:
+                    dataset = kinetics_file['durations'][:lastiter]
                 else:
-                    durations.append(where[0][i])
-                weights.append(weight)
+                    dataset = kinetics_file['durations']
 
+            torf = numpy.logical_and(dataset['istate'] == istate, dataset['fstate'] == fstate)
+            torf = numpy.logical_and(dataset['weight'] > 0, torf)
+            
+            w = dataset['weight'][torf]
+            d = dataset['duration'][torf]
+            d[d<0] = numpy.where(torf)[0][d<0]
+            weights.extend(w)
+            durations.extend(d)
+
+        return DurationCorrection(durations, weights)
+
+    def __init__(self, durations, weights):
         self.weights = numpy.array(weights)
         self.durations = numpy.array(durations)
+
     def correction(self, maxduration, timepoints):
         '''
         Return the correction factor
@@ -102,6 +94,7 @@ class DurationCorrection(object):
         for i, tau in enumerate(taugrid):
             matches = numpy.logical_and(self.durations >= tau, self.durations < tau + dtau)
             f_tilde[i] = self.weights[matches].sum()/(maxduration-tau+1)
+        
         if f_tilde.sum() != 0:
             f_tilde /= f_tilde.sum()*dtau
 
@@ -115,6 +108,7 @@ class DurationCorrection(object):
                 integral1[i] = numpy.trapz(f_tilde[:i+1], taugrid[:i+1])
         self.F_tilde = integral1
         integral2 = numpy.trapz(integral1, taugrid)
+
         if integral2 == 0:
             return 0.
         return maxduration/integral2
