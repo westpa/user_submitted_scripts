@@ -1,0 +1,4 @@
++ cd /ix/lchong/atb43/qmmm/wess2/cat10_rc_wess2/unsubstituted
+++ dirname /ix/lchong/atb43/qmmm/wess2/cat10_rc_wess2/unsubstituted/istates/1/45.rst
++ mkdir -p /ix/lchong/atb43/qmmm/wess2/cat10_rc_wess2/unsubstituted/istates/1
++ ln -s /ix/lchong/atb43/qmmm/wess2/cat10_rc_wess2/unsubstituted/bstates/46 /ix/lchong/atb43/qmmm/wess2/cat10_rc_wess2/unsubstituted/istates/1/45.rst

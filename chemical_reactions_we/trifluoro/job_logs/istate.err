@@ -1,0 +1,4 @@
++ cd /ix/lchong/atb43/qmmm/wess2/cat15_rc_wess2/trifluoro
+++ dirname /ix/lchong/atb43/qmmm/wess2/cat15_rc_wess2/trifluoro/istates/1/49.rst
++ mkdir -p /ix/lchong/atb43/qmmm/wess2/cat15_rc_wess2/trifluoro/istates/1
++ ln -s /ix/lchong/atb43/qmmm/wess2/cat15_rc_wess2/trifluoro/bstates/50 /ix/lchong/atb43/qmmm/wess2/cat15_rc_wess2/trifluoro/istates/1/49.rst
