@@ -1,0 +1,5 @@
+parm ../../common_files/cat5.top
+trajin bstate.rst
+nativecontacts :1 :2 mindist out pcoord2_raw.init
+go 
+quit
