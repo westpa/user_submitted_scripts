@@ -4,3 +4,7 @@
 [submodule "HIF2alpha_unbinding"]
 	path = HIF2alpha_unbinding
 	url = https://github.com/westpa/HIF2alpha_unbinding
+[submodule "LAOBP_WEPR"]
+	path = LAOBP_WEPR
+	url = https://github.com/darianyang/wepr
+	branch = main
